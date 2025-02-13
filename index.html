@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=2.0">
+    <title>메모장닷컴</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* 스타일 설정 */
+        body { font-family: 'Arial', sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); animation: fadeIn 0.5s ease-in-out; }
+        h1 { color: #333; text-align: center; font-size: 2.5em; margin-bottom: 30px; }
+        #memo { width: 100%; height: 200px; padding: 15px; font-size: 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; min-height: 200px; background-color: #f0f0f0; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background-color: #007bff; color: white; transition: 0.3s; margin: 5px; }
+        button:hover { background-color: #0056b3; transform: scale(1.05); }
+        .toolbar { margin: 20px 0; text-align: center; }
+        .toolbar button, .toolbar select { margin: 0 10px; padding: 10px 20px; font-size: 16px; }
+        .ad-container { margin: 20px 0; padding: 10px; border-radius: 10px; background-color: #e0e0e0; text-align: center; }
+        .memo-list { margin-top: 30px; }
+        .memo-item { background: #fff; padding: 15px; margin: 10px 0; border-left: 6px solid #007bff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 18px; }
+        .memo-item button { background-color: #dc3545; padding: 6px 12px; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; border: none; }
+        .memo-item button:hover { background-color: #c82333; }
+        select, input[type="checkbox"] { margin: 0 10px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>메모장닷컴</h1>
+
+        <!-- 설명 -->
+        <p>이 웹사이트는 간단한 메모장 기능을 제공하는 웹 애플리케이션입니다. 사용자는 메모를 작성하고 저장하며, 저장된 메모를 목록에서 확인하고 삭제할 수 있습니다. 또한, 메모 내용은 마크다운 모드와 일반 모드에서 작성할 수 있으며, 텍스트를 굵게 또는 기울이게 변경할 수 있는 도구가 제공됩니다. 또한, 더블 클릭 시 저장된 메모를 불러와 수정할 수 있습니다. 광고 자리도 포함되어 있어 사이트 내에 광고를 삽입할 수 있습니다.</p>
+
+        <!-- 광고 자리 -->
+        <div class="ad-container">
+            <p>여기에 광고가 표시됩니다.</p>
+            <!-- 광고 배너 예시 (이미지 삽입) -->
+            <img src="https://via.placeholder.com/600x100?text=%EC%9E%90%EB%A6%AC+%EC%9E%90%EB%A6%AC%EC%9D%B8" alt="광고 배너">
+        </div>
+
+        <div class="toolbar">
+            <button onclick="formatText('bold')"><i class="fas fa-bold"></i></button>
+            <button onclick="formatText('italic')"><i class="fas fa-italic"></i></button>
+            <select id="textAlign" onchange="alignText()">
+                <option value="left">왼쪽 정렬</option>
+                <option value="center">가운데 정렬</option>
+                <option value="right">오른쪽 정렬</option>
+            </select>
+            <label><input type="checkbox" id="checkboxMemo"> 체크박스 포함</label>
+            <select id="modeSelect" onchange="changeMode()">
+                <option value="normal">일반 모드</option>
+                <option value="markdown">마크다운 모드</option>
+            </select>
+        </div>
+
+        <div id="memo" contenteditable="true" placeholder="여기에 메모를 입력하세요..." oninput="checkInput()"></div>
+        
+        <br>
+        <div class="toolbar">
+            <button onclick="saveMemo()"><i class="fas fa-save"></i> 저장</button>
+            <button onclick="clearMemo()" style="background-color: #dc3545;"><i class="fas fa-trash"></i> 삭제</button>
+        </div>
+
+        <!-- 저장된 메모 목록 -->
+        <div class="memo-list" id="memoList"></div>
+
+        <!-- 광고 자리 -->
+        <div class="ad-container">
+            <p>여기에 광고가 표시됩니다.</p>
+            <!-- 광고 배너 예시 (이미지 삽입) -->
+            <img src="https://via.placeholder.com/600x100?text=%EC%9E%90%EB%A6%AC+%EC%9E%90%EB%A6%AC%EC%9D%B8" alt="광고 배너">
+        </div>
+    </div>
+
+    <script>
+        let mode = "normal"; // 기본 모드는 일반
+
+        function formatText(command) {
+            let memo = document.getElementById("memo");
+            if (command === "bold") {
+                document.execCommand('bold');
+            } else if (command === "italic") {
+                document.execCommand('italic');
+            }
+        }
+
+        function alignText() {
+            let alignType = document.getElementById("textAlign").value;
+            document.getElementById("memo").style.textAlign = alignType;
+        }
+
+        function saveMemo() {
+            let memoText = document.getElementById("memo").innerHTML.trim();
+            if (memoText === "") return alert("메모를 입력하세요!");
+            let checkbox = document.getElementById("checkboxMemo").checked ? "[ ] " : "";
+            let memos = JSON.parse(localStorage.getItem("memos")) || [];
+
+            // 마크다운 모드일 경우
+            if (mode === "markdown") {
+                memos.push(checkbox + memoText);
+            } else {
+                // 일반 모드일 경우 HTML 태그로 저장
+                memos.push(checkbox + memoText);
+            }
+            localStorage.setItem("memos", JSON.stringify(memos));
+            document.getElementById("memo").innerHTML = "";
+            displayMemos();
+        }
+
+        function clearMemo() {
+            if (confirm("모든 메모를 삭제하시겠습니까?")) {
+                localStorage.removeItem("memos");
+                displayMemos();
+            }
+        }
+
+        function displayMemos() {
+            let memos = JSON.parse(localStorage.getItem("memos")) || [];
+            let memoList = document.getElementById("memoList");
+            memoList.innerHTML = "";
+            memos.forEach((memo, index) => {
+                let memoItem = document.createElement("div");
+                memoItem.classList.add("memo-item");
+
+                // 저장된 메모를 HTML로 처리해서 표시
+                memoItem.innerHTML = `${memo} <button onclick="deleteMemo(${index})"><i class="fas fa-times"></i></button>`;
+
+                // 더블 클릭 시 해당 메모 내용을 메모 입력란에 로드
+                memoItem.ondblclick = function() {
+                    document.getElementById("memo").innerHTML = memo; // 메모 내용 로드
+                };
+
+                memoList.appendChild(memoItem);
+            });
+        }
+
+        function deleteMemo(index) {
+            let memos = JSON.parse(localStorage.getItem("memos"));
+            memos.splice(index, 1);
+            localStorage.setItem("memos", JSON.stringify(memos));
+            displayMemos();
+        }
+
+        function changeMode() {
+            mode = document.getElementById("modeSelect").value;
+            // 마크다운 모드로 전환 시 텍스트 영역을 검정색으로
+            if (mode === "markdown") {
+                document.getElementById("memo").style.backgroundColor = "black";
+                document.getElementById("memo").style.color = "white";
+            } else {
+                document.getElementById("memo").style.backgroundColor = "white";
+                document.getElementById("memo").style.color = "black";
+            }
+        }
+
+        function checkInput() {
+            // 실시간 입력 시 처리할 수 있는 로직 추가
+        }
+
+        window.onload = displayMemos;
+    </script>
+</body>
+</html>
