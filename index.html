@@ -15,7 +15,6 @@
         button:hover { background-color: #0056b3; transform: scale(1.05); }
         .toolbar { margin: 20px 0; text-align: center; }
         .toolbar button, .toolbar select { margin: 0 10px; padding: 10px 20px; font-size: 16px; }
-        .ad-container { margin: 20px 0; padding: 10px; border-radius: 10px; background-color: #e0e0e0; text-align: center; }
         .memo-list { margin-top: 30px; }
         .memo-item { background: #fff; padding: 15px; margin: 10px 0; border-left: 6px solid #007bff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 18px; }
         .memo-item button { background-color: #dc3545; padding: 6px 12px; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; border: none; }
@@ -32,13 +31,7 @@
 
         <!-- 설명 -->
         <p>이 웹사이트는 간단한 메모장 기능을 제공하는 웹 애플리케이션입니다. 사용자는 메모를 작성하고 저장하며, 저장된 메모를 목록에서 확인하고 삭제할 수 있습니다. 또한, 메모 내용은 마크다운 모드와 일반 모드에서 작성할 수 있으며, 텍스트를 굵게 또는 기울이게 변경할 수 있는 도구가 제공됩니다. 또한, 더블 클릭 시 저장된 메모를 불러와 수정할 수 있습니다. 광고 자리도 포함되어 있어 사이트 내에 광고를 삽입할 수 있습니다.</p>
-
-        <!-- 광고 자리 -->
-        <div class="ad-container">
-            <p>여기에 광고가 표시됩니다.</p>
-            <!-- 광고 배너 예시 (이미지 삽입) -->
-            <img src="https://via.placeholder.com/600x100?text=%EC%9E%90%EB%A6%AC+%EC%9E%90%EB%A6%AC%EC%9D%B8" alt="광고 배너">
-        </div>
+                                                                                                                                                                                                                                                           
 
         <div class="toolbar">
             <button onclick="formatText('bold')"><i class="fas fa-bold"></i></button>
@@ -65,14 +58,6 @@
 
         <!-- 저장된 메모 목록 -->
         <div class="memo-list" id="memoList"></div>
-
-        <!-- 광고 자리 -->
-        <div class="ad-container">
-            <p>여기에 광고가 표시됩니다.</p>
-            <!-- 광고 배너 예시 (이미지 삽입) -->
-            <img src="https://via.placeholder.com/600x100?text=%EC%9E%90%EB%A6%AC+%EC%9E%90%EB%A6%AC%EC%9D%B8" alt="광고 배너">
-        </div>
-    </div>
 
     <script>
         let mode = "normal"; // 기본 모드는 일반
